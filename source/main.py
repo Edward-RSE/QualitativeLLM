@@ -2,27 +2,32 @@ import argparse
 
 import requests
 
-base_url = "http://127.0.0.1:8080"
+base_url = "http://localhost:11434"
 
 
 def get_server_health():
-    response = requests.get(f"{base_url}/health")
-    return response.json()
+    response = requests.get(f"{base_url}")
+    return response.status_code == 200
 
 
 def post_completion(context, user_input):
     prompt = f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>{context}<|eot_id|><|start_header_id|>user<|end_header_id|>{user_input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
     data = {
+        "model": "qwen2:7b",
         "prompt": prompt,
-        "temperature": 0.9,
-        "top_k": 35,
-        "top_p": 0.95,
-        "stop": ["</s>", "Assistant:", "User:", "<|eot_id|>"],
+        "options": {
+            "temperature": 0.9,
+            "top_k": 35,
+            "top_p": 0.95,
+            "stop": ["</s>", "Assistant:", "User:", "<|eot_id|>"],
+        },
+        "format": "json",
+        "stream": False,
     }
     headers = {"Content-Type": "application/json"}
-    response = requests.post(f"{base_url}/completion", json=data, headers=headers)
+    response = requests.post(f"{base_url}/api/generate", json=data, headers=headers)
     if response.status_code == 200:
-        return response.json()["content"].strip()
+        return response.json()["response"].strip()
     else:
         return "Error processing your request. Please try again."
 
@@ -36,10 +41,10 @@ def update_context(context, user_input, assistant_response):
 
 
 def main(input_filename, prompt_filename, out_file, n):
-    health = get_server_health()
-    print(f"Server Health: {health}")
+    healthy = get_server_health()
+    print(f"Server Health: {healthy}")
 
-    if health.get("status") != "ok":
+    if not healthy:
         print("Server is not ready for requests.")
         return
 

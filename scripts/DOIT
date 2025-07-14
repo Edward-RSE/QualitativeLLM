@@ -1,6 +1,6 @@
 CHUNK=10
-DIR=.
-MAIN="main.py"
+DIR=data
+MAIN="source/main.py"
 AUTH=""
 
 MODEL=qwen2-72B-instruct
@@ -10,14 +10,17 @@ INPUT=I
 PROMPTS="P5 P6"
 PROMPTS="P6b"
 PROMPTS=P8-7B
+PROMPTS=P0
 
-MODEL="openai"
-KEY=`cat OPENAIKEY`
-AUTH="-k $KEY"
-MAIN="openai_main.py"
-PROMPTS="P8-OPENAI"
+# MODEL="openai"
+# KEY=`cat OPENAIKEY`
+# AUTH="-k $KEY"
+# MAIN="openai_main.py"
+# PROMPTS="P8-OPENAI"
 #DIR=FISH.d
 #INPUT=TRAINING
+
+ollama pull $MODEL
 
 test -d $DIR/$MODEL || mkdir $DIR/$MODEL
 for p in $PROMPTS

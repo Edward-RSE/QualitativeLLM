@@ -1,0 +1,27 @@
+CHUNK=10
+DIR=.
+MAIN="main.py"
+AUTH=""
+
+MODEL=qwen2-72B-instruct
+MODEL=qwen2-7B-instruct
+
+INPUT=I
+PROMPTS="P5 P6"
+PROMPTS="P6b"
+PROMPTS=P8-7B
+
+MODEL="openai"
+KEY=`cat OPENAIKEY`
+AUTH="-k $KEY"
+MAIN="openai_main.py"
+PROMPTS="P8-OPENAI"
+#DIR=FISH.d
+#INPUT=TRAINING
+
+test -d $DIR/$MODEL || mkdir $DIR/$MODEL
+for p in $PROMPTS
+do
+	OUT=`echo $p | sed -e 's/P/O/'`
+	python $MAIN $DIR/$INPUT $DIR/$p -n 10 -o $DIR/$MODEL/$OUT $AUTH
+done

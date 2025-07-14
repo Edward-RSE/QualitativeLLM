@@ -1,0 +1,2 @@
+The following data is list of statements in quote marks, one per line. Please assign each statement a sequential number starting from 1 and repeat the statement verbation and respond "yes" or "no" depending on whether the statement refers to financial issues or not and also explain why you think so. Give the output in the form:
+<Number> // <Statement> // <Response> // <Explanation>

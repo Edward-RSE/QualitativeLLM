@@ -5,6 +5,7 @@ AUTH=""
 
 MODEL=qwen2-72B-instruct
 MODEL=qwen2-7B-instruct
+MODEL=deepseek-r1:latest
 
 INPUT=I
 PROMPTS="P5 P6"
@@ -19,8 +20,6 @@ PROMPTS=P0
 # PROMPTS="P8-OPENAI"
 #DIR=FISH.d
 #INPUT=TRAINING
-
-ollama pull $MODEL
 
 test -d $DIR/$MODEL || mkdir $DIR/$MODEL
 for p in $PROMPTS

@@ -10,10 +10,10 @@ def get_server_health():
     return response.status_code == 200
 
 
-def post_completion(context, user_input):
+def post_completion(model, context, user_input):
     prompt = f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>{context}<|eot_id|><|start_header_id|>user<|end_header_id|>{user_input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
     data = {
-        "model": "qwen2:7b",
+        "model": model,
         "prompt": prompt,
         "options": {
             "temperature": 0.9,
@@ -40,7 +40,7 @@ def update_context(context, user_input, assistant_response):
     return f"{context}\nUser: {user_input}\nAssistant: {assistant_response}"
 
 
-def main(input_filename, prompt_filename, out_file, n):
+def main(model, input_filename, prompt_filename, out_file, n):
     healthy = get_server_health()
     print(f"Server Health: {healthy}")
 
@@ -64,7 +64,7 @@ def main(input_filename, prompt_filename, out_file, n):
         for i, chunk in enumerate(chunks):
             print(f"Processing chunk {i + 1}/{len(chunks)}")
             chunk = "\n".join(chunk)
-            output = post_completion(prompt, chunk)
+            output = post_completion(model, prompt, chunk)
 
             f.write(f"{output}\n\n\n")
 
@@ -76,6 +76,7 @@ if __name__ == "__main__":
         "the output into a file",
     )
 
+    parser.add_argument("model")
     parser.add_argument("input_filename")
     parser.add_argument("prompt_filename")
     parser.add_argument("-o", "--output_filename")
@@ -86,4 +87,4 @@ if __name__ == "__main__":
     output_filename = "out.txt" if args.output_filename is None else args.output_filename
     number_in_chunks = 100 if args.number_in_chunks is None else int(args.number_in_chunks)
 
-    main(args.input_filename, args.prompt_filename, output_filename, number_in_chunks)
+    main(args.model, args.input_filename, args.prompt_filename, output_filename, number_in_chunks)

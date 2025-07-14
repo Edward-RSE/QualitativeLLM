@@ -25,5 +25,5 @@ test -d $DIR/$MODEL || mkdir $DIR/$MODEL
 for p in $PROMPTS
 do
 	OUT=`echo $p | sed -e 's/P/O/'`
-	python $MAIN $DIR/$INPUT $DIR/$p -n 10 -o $DIR/$MODEL/$OUT $AUTH
+	python $MAIN $MODEL $DIR/$INPUT $DIR/$p -n 10 -o $DIR/$MODEL/$OUT $AUTH
 done

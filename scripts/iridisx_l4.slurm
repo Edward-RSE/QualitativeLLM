@@ -1,17 +1,18 @@
 #!/bin/bash
 
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=1
-#SBATCH --gpus-per-node=1
-#SBATCH --partition=swarm_l4
-#SBATCH --mem=64G
 #SBATCH --time=00:05:00
+#SBATCH --partition=swarm_l4
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=64G
+#SBATCH --gres=gpu:1
 
-module load ollama conda
-# source $HOME/.bashrc
-source activate qualitative_llm
-nvidia-smi
+# Load Ollama 0.3.14 and start server
+# Note that 0.9.5 hangs during response generation
+module load conda
+module load ollama/0.3.14
 ollama serve &
+
+source activate qualitative_llm
 bash DOIT
 

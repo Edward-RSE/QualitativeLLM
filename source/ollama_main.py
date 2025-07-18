@@ -22,7 +22,6 @@ def post_completion(model, context, user_input):
             "top_p": 0.95,
             "stop": ["</s>", "Assistant:", "User:", "<|eot_id|>"],
         },
-        "format": "json",
         "stream": False,
     }
     headers = {"Content-Type": "application/json"}

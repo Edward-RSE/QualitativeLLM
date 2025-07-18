@@ -40,6 +40,7 @@ if __name__ == "__main__":
         "the output into a file",
     )
 
+    parser.add_argument("model_name")  # Unused, kept kept for consistency with other scripts
     parser.add_argument("input_filename")
     parser.add_argument("prompt_filename")
     parser.add_argument("-o", "--output_filename")

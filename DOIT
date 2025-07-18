@@ -1,29 +1,15 @@
 CHUNK=10
-DIR=data
-MAIN="source/ollama_main.py"
-AUTH=""
+OUTPUT_DIR="output"
+INPUT_DIR="input"
+MAIN="scripts/ollama_main.py"
 
-MODEL=qwen2-72B-instruct
-MODEL=qwen2-7B-instruct
-MODEL=rouge/qwen2-7b-instruct
+MODEL=$1
+INPUT="I"
+PROMPTS="P0"
 
-INPUT=I
-PROMPTS="P5 P6"
-PROMPTS="P6b"
-PROMPTS=P8-7B
-PROMPTS=P0
-
-# MODEL="openai"
-# KEY=`cat OPENAIKEY`
-# AUTH="-k $KEY"
-# MAIN="openai_main.py"
-# PROMPTS="P8-OPENAI"
-#DIR=FISH.d
-#INPUT=TRAINING
-
-test -d $DIR/$MODEL || mkdir $DIR/$MODEL
+test -d $OUTPUT_DIR/$MODEL || mkdir -p $OUTPUT_DIR/$MODEL
 for p in $PROMPTS
 do
 	OUT=`echo $p | sed -e 's/P/O/'`
-	python $MAIN $MODEL $DIR/$INPUT $DIR/$p -n 10 -o $DIR/$MODEL/$OUT $AUTH
+	python $MAIN $MODEL $INPUT_DIR/$INPUT $INPUT_DIR/$p -n 10 -o $OUTPUT_DIR/$MODEL/$OUT
 done

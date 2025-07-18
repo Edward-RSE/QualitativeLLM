@@ -6,8 +6,8 @@ base_url = "http://localhost:11434"
 
 
 def get_server_health():
-    response = requests.get(f"{base_url}")
-    return response.status_code == 200
+    response = requests.get(base_url)
+    return response.status_code == 200 and response.text == "Ollama is running"
 
 
 def post_completion(model, context, user_input):
@@ -70,7 +70,7 @@ def main(model, input_filename, prompt_filename, out_file, n):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        prog="AI-Navigator Interaction",
+        prog="Ollama Interaction",
         description="Splits file up into chunks of size n and puts those into an LLM with a given prompt, then puts "
         "the output into a file",
     )

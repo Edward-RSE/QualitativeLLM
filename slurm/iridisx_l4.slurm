@@ -14,5 +14,4 @@ module load ollama/0.3.14
 ollama serve &
 
 source activate qualitative_llm
-bash DOIT
-
+bash DOIT $1

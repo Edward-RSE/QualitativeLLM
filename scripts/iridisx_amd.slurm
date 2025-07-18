@@ -4,10 +4,13 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --gpus-per-node=1
-#SBATCH --partition=a100
-#SBATCH --time=00:01:00
+#SBATCH --partition=amd
+#SBATCH --mem=64G
+#SBATCH --time=00:05:00
 
+module load ollama conda
+source activate qualitative_llm
 nvidia-smi
-module load ollama
 ollama serve &
 bash DOIT
+

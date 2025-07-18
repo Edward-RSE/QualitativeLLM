@@ -2,6 +2,18 @@
 
 QualitativeLLM is a Python project for using local LLMs for qualitative research.
 
+## Repository structure
+
+- conda - environment file for using anaconda navigator SDK
+- input - inputs for the scripts
+- output - output for the script
+- scripts - three pythons scripts, using openai, ollama or anaconda ai SDK
+- slurm - scripts to use on iridisx, including submission scripts
+
+Note that `scripts/anaconda_main.py` doesn't work on Iridis X because there is no way to launch the Anaconda AI
+Navigator GUI which is required for some reason. Also note that `scripts/openai_main.py` doesn't work on Iridis either,
+because the compute nodes can't access the internet.
+
 ## Iridis X
 
 It is possible to run a local LLM on Iridis X using Ollama, where Ollama 0.3.14 is installed. To install a specific

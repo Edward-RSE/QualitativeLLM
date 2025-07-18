@@ -1,11 +1,11 @@
 CHUNK=10
 DIR=data
-MAIN="source/main.py"
+MAIN="source/anaconda_main.py"
 AUTH=""
 
 MODEL=qwen2-72B-instruct
 MODEL=qwen2-7B-instruct
-MODEL=deepseek-r1:latest
+# MODEL=deepseek-r1:latest
 
 INPUT=I
 PROMPTS="P5 P6"

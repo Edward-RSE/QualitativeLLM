@@ -1,0 +1,92 @@
+import argparse
+
+import requests
+from anaconda_ai import get_default_client
+
+
+def create_server(model_name):
+    client = get_default_client()
+    model = client.models.get(model_name)
+    model_quantization = model.get_quantization("Q4_K_M")
+    return client.servers.create(model_quantization)
+
+
+def get_server_health(base_url):
+    response = requests.get(f"{base_url}/health")
+    return response.json()
+
+
+def post_completion(base_url, context, user_input):
+    prompt = f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>{context}<|eot_id|><|start_header_id|>user<|end_header_id|>{user_input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+    data = {
+        "prompt": prompt,
+        "temperature": 0.9,
+        "top_k": 35,
+        "top_p": 0.95,
+        "stop": ["</s>", "Assistant:", "User:", "<|eot_id|>"],
+    }
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(f"{base_url}/completion", json=data, headers=headers)
+    if response.status_code == 200:
+        return response.json()["content"].strip()
+    else:
+        return "Error processing your request. Please try again."
+
+
+def proxy_post_completion(context, user_input):
+    return context + "\n" + user_input
+
+
+def update_context(context, user_input, assistant_response):
+    return f"{context}\nUser: {user_input}\nAssistant: {assistant_response}"
+
+
+def main(server, input_filename, prompt_filename, out_file, n):
+    health = get_server_health(server.url)
+    print(f"Server Health: {health}")
+
+    if health.get("status") != "ok":
+        print("Server is not ready for requests.")
+        return
+
+    with open(prompt_filename, "r", encoding="utf8") as f:
+        prompt = f.read()
+
+    in_text = []
+    with open(input_filename, "r", encoding="utf8") as f:
+        for line in f.readlines():
+            in_text.append(line.strip("\n"))
+
+    chunks = [in_text[i : i + n] for i in range(0, len(in_text), n)]
+
+    print(f"Input file read. Chunk size {n}\nNumber of chunks: {len(chunks)}")
+
+    with open(out_file, "w", encoding="utf8") as f:
+        for i, chunk in enumerate(chunks):
+            print(f"Processing chunk {i + 1}/{len(chunks)}")
+            chunk = "\n".join(chunk)
+            output = post_completion(server.url, prompt, chunk)
+
+            f.write(f"{output}\n\n\n")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog="AI-Navigator Interaction",
+        description="Splits file up into chunks of size n and puts those into an LLM with a given prompt, then puts "
+        "the output into a file",
+    )
+
+    parser.add_argument("model_name")
+    parser.add_argument("input_filename")
+    parser.add_argument("prompt_filename")
+    parser.add_argument("-o", "--output_filename")
+    parser.add_argument("-n", "--number_in_chunks")
+
+    args = parser.parse_args()
+
+    output_filename = "out.txt" if args.output_filename is None else args.output_filename
+    number_in_chunks = 100 if args.number_in_chunks is None else int(args.number_in_chunks)
+
+    with create_server(args.model_name) as server:
+        main(server, args.input_filename, args.prompt_filename, output_filename, number_in_chunks)

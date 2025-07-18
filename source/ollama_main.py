@@ -2,6 +2,7 @@ import argparse
 
 import requests
 
+
 base_url = "http://localhost:11434"
 
 

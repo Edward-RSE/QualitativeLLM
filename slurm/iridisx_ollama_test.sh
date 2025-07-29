@@ -6,7 +6,6 @@
 #SBATCH --ntasks=1
 #SBATCH --nodes=1
 
-
 # 0.3.14 takes ~300 seconds to start the llama runner
 module load ollama/0.3.14
 # 0.9.5 hangs after starting the llama runner (~few seconds), doesn't generate a response

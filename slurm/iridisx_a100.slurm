@@ -7,10 +7,12 @@
 #SBATCH --mem=64G
 #SBATCH --gres=gpu:1
 
+export OLLAMA_NUM_THREADS=$SLURM_NTASKS
+
 # Load Ollama 0.3.14 and start server
 # Note that 0.9.5 hangs during response generation
 module load conda
-module load ollama/0.3.14
+module load ollama/0.9.5
 ollama serve &
 
 source activate qualitative_llm
